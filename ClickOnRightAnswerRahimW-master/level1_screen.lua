@@ -145,6 +145,12 @@ local function DisplayAddEquation()
     
 end
 
+local function youwin()
+    
+    if (numberCorrect == 5) then 
+        composer.gotoScene("you_win")
+    end
+end
 
 local function RestartScene()
 
@@ -179,8 +185,14 @@ local function TouchListenerAnswer(touch)
             correct.isVisible = true
             -- increase the number correct by 1
             numberCorrect = numberCorrect + 1
-            -- call RestartScene after 1 second
-            timer.performWithDelay( 1000, RestartScene )
+
+            if (numberCorrect == 5) then 
+                composer.gotoScene("you_win")
+            else
+
+                -- call RestartScene after 1 second
+                timer.performWithDelay( 1000, RestartScene )
+            end
         end        
 
     end
