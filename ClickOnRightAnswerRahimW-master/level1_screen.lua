@@ -70,6 +70,8 @@ local congratulationText
 -- Displays text that says correct.
 local correct 
 
+local Incorrect
+
 -- Displays the level text of time text
 local level1Text 
 
@@ -103,21 +105,21 @@ local function DisplayAnswers( )
 
     if (answerPosition == 1) then                
         
-        answerTextObject.x = display.contentWidth*.3        
-        wrongAnswer1TextObject.x = display.contentWidth*.2
-        wrongAnswer2TextObject.x = display.contentWidth*.1 
+        answerTextObject.x = display.contentWidth*.4        
+        wrongAnswer1TextObject.x = display.contentWidth*.3
+        wrongAnswer2TextObject.x = display.contentWidth*.2
 
     elseif (answerPosition == 2) then
        
-        answerTextObject.x = display.contentWidth*.2        
-        wrongAnswer1TextObject.x = display.contentWidth*.1
-        wrongAnswer2TextObject.x = display.contentWidth*.3 
+        answerTextObject.x = display.contentWidth*.3        
+        wrongAnswer1TextObject.x = display.contentWidth*.2
+        wrongAnswer2TextObject.x = display.contentWidth*.4 
 
     else
        
-        answerTextObject.x = display.contentWidth*.1        
-        wrongAnswer1TextObject.x = display.contentWidth*.2
-        wrongAnswer2TextObject.x = display.contentWidth*.3
+        answerTextObject.x = display.contentWidth*.2        
+        wrongAnswer1TextObject.x = display.contentWidth*.3
+        wrongAnswer2TextObject.x = display.contentWidth*.4
     end
 
 end
@@ -156,6 +158,7 @@ local function RestartScene()
 
     alreadyClickedAnswer = false
     correct.isVisible = false
+    Incorrect.isVisible = false
 
     livesText.text = "Number of lives = " .. tostring(lives)
     numberCorrectText.text = "Number correct = " .. tostring(numberCorrect)
@@ -205,6 +208,7 @@ local function TouchListenerWrongAnswer1(touch)
     if (touch.phase == "ended") and (alreadyClickedAnswer == false) then
 
         alreadyClickedAnswer = true
+        Incorrect.isVisible = true
 
 
         if (answer ~= tonumber(userAnswer)) then
@@ -225,11 +229,13 @@ local function TouchListenerWrongAnswer2(touch)
         if (touch.phase == "ended") and (alreadyClickedAnswer == false) then
 
             alreadyClickedAnswer = true
+            Incorrect.isVisible = true
 
 
             if (answer ~= tonumber(userAnswer)) then
                 -- decrease a life
                 lives = lives - 1
+
                 -- call RestartScene after 1 second
                 timer.performWithDelay( 1000, RestartScene )            
             end        
@@ -274,7 +280,7 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the background image
-    bkg = display.newImageRect("Images/Level 1 Screen.png", display.contentWidth, display.contentHeight)
+    bkg = display.newImageRect("Images/bak.jpg", display.contentWidth, display.contentHeight)
     bkg.x = display.contentCenterX
     bkg.y = display.contentCenterY
     bkg.width = display.contentWidth
@@ -284,7 +290,7 @@ function scene:create( event )
     addEquationTextObject = display.newText( "", display.contentWidth*1/4, display.contentHeight*2/5, nil, 50 )
 
     -- sets the color of the add equation text object
-    addEquationTextObject:setTextColor(155/255, 42/255, 198/255)
+    addEquationTextObject:setTextColor(100/255, 127/255, 78/255)
 
     -- create the text objects that will hold the correct answer and the wrong answers
     answerTextObject = display.newText("", display.contentWidth*.4, display.contentHeight/2, nil, 50 )
@@ -304,6 +310,10 @@ function scene:create( event )
     correct = display.newText("Correct", display.contentWidth/2, display.contentHeight*1/3, nil, 50 )
     correct:setTextColor(100/255, 47/255, 210/255)
     correct.isVisible = false
+
+    Incorrect = display.newText("Incorrect", display.contentWidth/2, display.contentHeight*1/3, nil, 50 )
+    Incorrect:setTextColor(255/255, 0/255, 0/255)
+    Incorrect.isVisible = false
 
     -- create the text object that will say Out of Time, set the colour and then hide it
     outOfTimeText = display.newText("Out of Time!", display.contentWidth*2/5, display.contentHeight*1/3, nil, 50)

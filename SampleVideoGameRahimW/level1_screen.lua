@@ -25,11 +25,44 @@ sceneName = "level1_screen"
 local scene = composer.newScene( sceneName )
 
 -----------------------------------------------------------------------------------------
+-- SOUND
+-----------------------------------------------------------------------------------------
+local bkgsound = audio.loadStream("Sounds/river.mp3")
+local bkgsoundChannel
+
+
+-----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
 
 -- The local variables for this scene
 local bkg_image
+local unmuteButton
+local muteButton
+
+-----------------------------------------------------------------------------------------
+-- LOCAL FUNCTIONS
+-----------------------------------------------------------------------------------------
+
+local function Mute ( touch )
+    if (touch.phase == "ended") then
+        audio.pause(bkgsound)
+        soundOn = false
+        muteButton.isVisible = false
+        unmuteButton.isVisible = true
+    end
+end
+
+
+local function Unmute ( touch )
+    if (touch.phase == "began") then
+        audio.resume(bkgsound)
+        soundOn = true
+        muteButton.isVisible = true
+        unmuteButton.isVisible = false
+    end
+end
+
 
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
@@ -43,43 +76,69 @@ function scene:create( event )
 
     -----------------------------------------------------------------------------------------
 
-    -- Insert the background image
     bkg_image = display.newImageRect("Images/level1_screen.png", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
     bkg_image.height = display.contentHeight
 
+    muteButton = display.newImageRect("Images/MuteButton.png", 100, 100)
+    muteButton.x = display.contentWidth*1.5/10
+    muteButton.y = display.contentHeight*1.3/10
+    muteButton.isVisible = true
+
+    unmuteButton = display.newImageRect("Images/Unmute.png", 100, 100)
+    unmuteButton.x = display.contentWidth*1.5/10
+    unmuteButton.y = display.contentHeight*1.3/10
+    unmuteButton.isVisible = true
+
+
+
+   
+   
+
+  
+
+
+
+
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
 
         -- Insert background image into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( bkg_image )    
+    sceneGroup:insert( bkg_image )  
+    sceneGroup:insert( unmuteButton )
+    sceneGroup:insert( muteButton)
+
 
 end --function scene:create( event )
 
 -----------------------------------------------------------------------------------------
 
 -- The function called when the scene is issued to appear on screen
+
 function scene:show( event )
 
     -- Creating a group that associates objects with the scene
-    local sceneGroup = self.view
-    local phase = event.phase
 
+    local sceneGroup = self.view
+
+    local phase = event.phase
+    
     -----------------------------------------------------------------------------------------
 
     if ( phase == "will" ) then
+
 
         -- Called when the scene is still off screen (but is about to come on screen).
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
+        bkgsoundChannel = audio.play( bkgsound, { channel=1, loops=-1 })
 
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
-
     end
 
 end --function scene:show( event )
@@ -96,6 +155,7 @@ function scene:hide( event )
     -----------------------------------------------------------------------------------------
 
     if ( phase == "will" ) then
+        bkgsound = audio.stop()
         -- Called when the scene is on screen (but is about to go off screen).
         -- Insert code here to "pause" the scene.
         -- Example: stop timers, stop animation, stop audio, etc.
@@ -103,6 +163,7 @@ function scene:hide( event )
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
+
         -- Called immediately after scene goes off screen.
     end
 

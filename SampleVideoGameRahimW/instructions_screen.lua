@@ -32,7 +32,7 @@ local backButton
 -----------------------------------------------------------------------------------------
 local function BackTransition( )
     composer.gotoScene( "main_menu", {effect = "zoomInOutRotate", time = 500})
-    backButton.alpha = 0
+   
 end
 
 -----------------------------------------------------------------------------------------
@@ -55,20 +55,22 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the background image
-    bkg_image = display.newImageRect("Images/Instructions Screen.png", display.contentWidth, display.contentHeight)
+    bkg_image = display.newImageRect("Images/Instrutions.jpg", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
     bkg_image.height = display.contentHeight
 
 
-  
+   sceneGroup:insert( bkg_image )
+
+
 
     -- Send the background image to the back layer so all other objects can be on top
-    bkg_image:toBack()
+   bkg_image:toBack()
 
-        -- Insert background image into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( bkg_image )    
+    -- Insert background image into the scene group in order to ONLY be associated with this scene
+     
  --function scene:create( event )
 
 	backButton = widget.newButton( 
@@ -76,19 +78,25 @@ function scene:create( event )
         -- Setting Position
         x = display.contentWidth*1/8,
         y = display.contentHeight*15/16,
+        width = 200,
+        height = 100,
 
         -- Setting Dimensions
         -- width = 1000,
         -- height = 106,
 
         -- Setting Visual Properties
-        defaultFile = "Images/Back Button Unpressed.png",
-        overFile = "Images/Back Button Pressed.png",
+        defaultFile = "Images/BackButtonUnpressedRahimW@2x.png",
+        overFile = "Images/BackButtonPressedRahimW@2x.png",
 
         -- Setting Functional Properties
         onRelease = BackTransition, 
 
     } )
+
+
+    sceneGroup:insert(backButton)
+
 end
 
 -----------------------------------------------------------------------------------------
@@ -108,6 +116,7 @@ function scene:show( event )
     -----------------------------------------------------------------------------------------
 
     elseif ( phase == "did" ) then
+
 
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.

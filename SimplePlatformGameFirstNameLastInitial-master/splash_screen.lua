@@ -1,54 +1,57 @@
 -----------------------------------------------------------------------------------------
 --
--- splash_screen.lua
--- Created by: Your Name
--- Date: Month Day, Year
--- Description: This is the splash screen of the game. It displays the 
--- company logo that...
+-- intro_screen.lua
+-- Created by: Ms Raffin
+-- Date: Nov. 22nd, 2014
+-- Description: This is the splash screen of the game. It displays the app logo and the 
+-- company logo with some sort of animation...
 -----------------------------------------------------------------------------------------
 
 -- Use Composer Library
 local composer = require( "composer" )
 
+-- use the physics library
+local physics = require("physics")
+
 -- Name the Scene
 sceneName = "splash_screen"
-
------------------------------------------------------------------------------------------
 
 -- Create Scene Object
 local scene = composer.newScene( sceneName )
 
-display.setStatusBar( display.HiddenStatusBar )
+-----------------------------------------------------------------------------------------
 
-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
- 
--- The local variables for this scene
-local backgroundimage
-local CompanyTitle
-local Woodhouse
-local Stars
 
+local logo
+local bottom
 
---------------------------------------------------------------------------------------------
+--Spring sound effect
+ local springsound = audio.loadSound( "Sounds/BoingSoundEffect.mp3" )
+ local springSoundChannel
+
+-----------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
---------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
 
-local function GrowWoodhouse(event)
-
-    Woodhouse:scale( 1.03, 1.103)
-    Woodhouse:rotate(4,4)
-    Woodhouse.alpha = 0
-    Woodhouse.alpha = Woodhouse.alpha + 0.7   
-    timer.performWithDelay( 2000, Text)
-end
-
-
--- The function that will go to the main menu 
 local function gotoMainMenu()
     composer.gotoScene( "main_menu" )
 end
+
+--When this function is called, play the springt sound effect
+ local function SpringSoundEffect( )
+    -- play sound
+    springSoundChannel = audio.play(springsound)
+ end
+
+--When the game starts, it waits and calls this function
+local function SplashStart( )
+    timer.performWithDelay(1950, SpringSoundEffect)
+end
+
+
 
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
@@ -60,31 +63,35 @@ function scene:create( event )
     -- Creating a group that associates objects with the scene
     local sceneGroup = self.view
 
+    --Hide the status bar
+    display.setStatusBar(display.HiddenStatusBar)
 
-    -----------------------------------------------------------------------------------------
-    -- OBJECT CREATION
-    -----------------------------------------------------------------------------------------
-    backgroundimage = display.newImageRect("Images/bkgCL.jpg", 3048, 1536)
+    -- set the background color
+    display.setDefault("background", 1, 1, 1)
 
-    Stars = display.newImageRect("Images/Stars.png", 3048, 1536)
-    CompanyTitle = display.newText( "Night Time Games", 499, 381, nil, 100)
 
-    Woodhouse = display.newImageRect("Images/CompanyLogoRahimW.png", 200, 200)
-    Woodhouse.x = display.contentWidth/2
-    Woodhouse.y = display.contentHeight/2
-    Woodhouse.alpha = 0
+    -- logo image
+    logo = display.newImageRect("Images/CompanyLogoLeo.png", 100, 500)
+
+    -- set the x and y position of the logo
+    logo.x = display.contentWidth/2
+    logo.y = -300
+   
+    
+    -- create the bottom and set its position on the screen
+    bottom = display.newLine(500, 400, 0, 144)
+    bottom.x = display.contentCenterX
+    bottom.y = 768
+    bottom.isVisible = false
+
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( backgroundimage )
-    sceneGroup:insert( Stars )
-    sceneGroup:insert( CompanyTitle )
-    sceneGroup:insert( Woodhouse )
+    sceneGroup:insert( logo )
+    sceneGroup:insert (bottom)
 
-  
 end -- function scene:create( event )
 
-
-
+--------------------------------------------------------------------------------------------
 
 -- The function called when the scene is issued to appear on screen
 function scene:show( event )
@@ -102,17 +109,24 @@ function scene:show( event )
     if ( phase == "will" ) then
        
     -----------------------------------------------------------------------------------------
-
+        -- start the physics engine
+        physics.start()
+    
     elseif ( phase == "did" ) then
-        -- start the splash screen music
 
+        --Make the logo dynamic so that it will move
+        physics.addBody(logo, "dynamic", {density=0.04, friction=0})
 
-        -- Call the moveBeetleship function as soon as we enter the frame.
-       
+        logo:applyForce( 0, 1000, logo.x, logo.y )
 
-        Runtime:addEventListener("enterFrame", GrowWoodhouse)
+        --make the bottom static so that it won't move
+        physics.addBody(bottom, "static")
+
+        -- Call the GameStart function as soon as we enter the frame.
+        SplashStart( )
+
         -- Go to the main menu screen after the given time.
-        timer.performWithDelay ( 3000, gotoMainMenu)          
+        timer.performWithDelay ( 4500, gotoMainMenu)          
         
     end
 
@@ -125,23 +139,23 @@ function scene:hide( event )
 
     -- Creating a group that associates objects with the scene
     local sceneGroup = self.view
-    local phase = event.phase
+    local phase = event.phase 
 
-    -----------------------------------------------------------------------------------------
+    -- Called when the scene is still off screen (but is about to come on screen).
+    if ( phase == "will" ) then
 
-    -- Called when the scene is on screen (but is about to go off screen).
-    -- Insert code here to "pause" the scene.
-    -- Example: stop timers, stop animation, stop audio, etc.
-    if ( phase == "will" ) then  
+        --Make the logo dynamic so that it will move
+        physics.removeBody(logo)
 
-    -----------------------------------------------------------------------------------------
-
-    -- Called immediately after scene goes off screen.
-    elseif ( phase == "did" ) then
+        --make the bottom static so that it won't move
+        physics.removeBody(bottom)
         
-        Runtime:removeEventListener("enterFrame", GrowWoodhouse)
+    elseif ( phase == "did") then
+
+        physics.stop()
     end
 
+    -----------------------------------------------------------------------------------------
 end --function scene:hide( event )
 
 -----------------------------------------------------------------------------------------
@@ -173,5 +187,3 @@ scene:addEventListener( "destroy", scene )
 -----------------------------------------------------------------------------------------
 
 return scene
-
-
