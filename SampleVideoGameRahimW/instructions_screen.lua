@@ -55,7 +55,7 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the background image
-    bkg_image = display.newImageRect("Images/Instrutions.jpg", display.contentWidth, display.contentHeight)
+    bkg_image = display.newImageRect("Images/InstructionsPage.png", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
@@ -76,7 +76,7 @@ function scene:create( event )
 	backButton = widget.newButton( 
     {
         -- Setting Position
-        x = display.contentWidth*1/8,
+        x = display.contentWidth*1.1/8,
         y = display.contentHeight*15/16,
         width = 200,
         height = 100,

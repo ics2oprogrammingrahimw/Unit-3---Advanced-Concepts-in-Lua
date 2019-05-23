@@ -14,6 +14,7 @@
 local composer = require( "composer" )
 local widget = require( "widget" )
 
+
 -----------------------------------------------------------------------------------------
 
 -- Naming Scene
@@ -49,17 +50,17 @@ local function Mute ( touch )
         audio.pause(bkgsound)
         soundOn = false
         muteButton.isVisible = false
-        unmuteButton.isVisible = true
+        UnMuteButton.isVisible = true
     end
 end
 
 
 local function Unmute ( touch )
-    if (touch.phase == "began") then
+    if (touch.phase == "ended") then
         audio.resume(bkgsound)
         soundOn = true
         muteButton.isVisible = true
-        unmuteButton.isVisible = false
+        UnMuteButton.isVisible = false
     end
 end
 
@@ -82,15 +83,15 @@ function scene:create( event )
     bkg_image.width = display.contentWidth
     bkg_image.height = display.contentHeight
 
-    muteButton = display.newImageRect("Images/MuteButton.png", 100, 100)
+    muteButton = display.newImageRect("Images/UnMuteButton.png", 150, 150)
     muteButton.x = display.contentWidth*1.5/10
     muteButton.y = display.contentHeight*1.3/10
     muteButton.isVisible = true
 
-    unmuteButton = display.newImageRect("Images/Unmute.png", 100, 100)
-    unmuteButton.x = display.contentWidth*1.5/10
-    unmuteButton.y = display.contentHeight*1.3/10
-    unmuteButton.isVisible = true
+    UnMuteButton = display.newImageRect("Images/MuteButton.png", 150, 150)
+    UnMuteButton.x = display.contentWidth*1.5/10
+    UnMuteButton.y = display.contentHeight*1.3/10
+    UnMuteButton.isVisible = false
 
 
 
@@ -107,7 +108,7 @@ function scene:create( event )
 
         -- Insert background image into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( bkg_image )  
-    sceneGroup:insert( unmuteButton )
+    sceneGroup:insert( UnMuteButton )
     sceneGroup:insert( muteButton)
 
 
@@ -135,6 +136,8 @@ function scene:show( event )
 
     elseif ( phase == "did" ) then
         bkgsoundChannel = audio.play( bkgsound, { channel=1, loops=-1 })
+        muteButton:addEventListener("touch", Mute)
+        UnMuteButton:addEventListener("touch", Unmute)
 
         -- Called when the scene is now on screen.
         -- Insert code here to make the scene come alive.
